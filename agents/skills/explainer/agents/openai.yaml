@@ -1,0 +1,7 @@
+interface:
+  display_name: "Explainer"
+  short_description: "Create temporary serif HTML explainers."
+  default_prompt: "Use $explainer to create an HTML explainer about this topic."
+
+policy:
+  allow_implicit_invocation: false

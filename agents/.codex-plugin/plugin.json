@@ -1,0 +1,20 @@
+{
+  "name": "explainer",
+  "version": "0.1.0",
+  "description": "Create temporary, typography-first HTML explainers.",
+  "author": {
+    "name": "Scott Murphy"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Explainer",
+    "shortDescription": "Create temporary serif HTML explainers.",
+    "longDescription": "Turns a topic, question, or source document into a concise editorial HTML explainer with consistent serif typography. Every output is created under the operating system's temporary directory.",
+    "developerName": "Scott Murphy",
+    "category": "Productivity",
+    "capabilities": ["Write"],
+    "defaultPrompt": [
+      "Create an explainer about this topic."
+    ]
+  }
+}

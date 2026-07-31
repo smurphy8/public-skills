@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #faf9f6;
+      --paper: #faf9f6;
+      --ink: #171410;
+      --muted: #544c40;
+      --line: #d8d4cc;
+      --accent: #8a3f2d;
+      --accent-soft: #f1e3da;
+      --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --serif: Georgia, "Times New Roman", "Iowan Old Style", "Palatino Linotype", serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--page);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.68;
+    }
+
+    body {
+      margin: 0;
+      padding: 3rem 1.25rem;
+    }
+
+    main {
+      width: min(100%, 60rem);
+      margin: 0 auto;
+      padding: clamp(2rem, 5.5vw, 5rem);
+      background: var(--paper);
+    }
+
+    header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow,
+    .meta {
+      margin: 0;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0.6rem 0 0;
+      font-size: clamp(1.9rem, 4vw, 2.4rem);
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.15;
+      text-wrap: balance;
+    }
+
+    .deck {
+      max-width: 44rem;
+      margin: 1.1rem 0 0;
+      color: #332d21;
+      font-size: 1.1rem;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .meta {
+      margin-top: 1.25rem;
+      font-size: 0.65rem;
+    }
+
+    article > :first-child {
+      margin-top: 0;
+    }
+
+    section {
+      margin: 2.8rem 0;
+    }
+
+    h2,
+    h3 {
+      font-weight: 600;
+      line-height: 1.15;
+      text-wrap: balance;
+    }
+
+    h2 {
+      margin: 3rem 0 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--line);
+      font-size: 1.35rem;
+    }
+
+    h3 {
+      margin: 2rem 0 0.65rem;
+      font-size: 1.2rem;
+      font-style: italic;
+    }
+
+    p,
+    ul,
+    ol,
+    blockquote,
+    table,
+    figure,
+    aside,
+    pre {
+      margin: 1rem 0;
+    }
+
+    hr {
+      height: 1px;
+      margin: 3em 0;
+      border: 0;
+      background: var(--line);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+      text-underline-offset: 0.16em;
+    }
+
+    blockquote {
+      margin-left: 0;
+      padding: 0.25rem 0 0.25rem 1.25rem;
+      border-left: 3px solid var(--accent);
+      color: #332d21;
+      font-size: 1.08rem;
+      font-style: italic;
+    }
+
+    aside {
+      padding: 1.1rem 1.25rem;
+      background: var(--accent-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    code,
+    pre {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+    }
+
+    code {
+      padding: 0.08em 0.28em;
+      background: #edeae2;
+      border-radius: 0.2rem;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 1rem;
+      background: #28241f;
+      color: #f6f0e6;
+      border-radius: 0.2rem;
+      line-height: 1.5;
+    }
+
+    pre code {
+      padding: 0;
+      background: transparent;
+      color: inherit;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    th,
+    td {
+      padding: 0.65rem 0.7rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-weight: 700;
+    }
+
+    figure {
+      margin-right: 0;
+      margin-left: 0;
+    }
+
+    figure img,
+    figure svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    figcaption {
+      margin-top: 0.55rem;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      line-height: 1.45;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 0.68rem;
+    }
+
+    @media (max-width: 42rem) {
+      body {
+        padding: 0;
+      }
+    }
+
+    @media print {
+      html,
+      body {
+        background: #fff;
+      }
+
+      body {
+        padding: 0;
+      }
+
+      main {
+        width: auto;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Explainer</p>
+      <h1>{{TITLE}}</h1>
+      <p class="deck">{{SUBTITLE}}</p>
+      <p class="meta">{{CREATED_AT}}</p>
+    </header>
+    <article>
+      <!-- EXPLAINER_CONTENT -->
+    </article>
+    <footer>Temporary explainer</footer>
+  </main>
+  <script data-inline="mermaid">/*!MERMAID*/</script>
+  <script data-inline="mermaid-init">mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+  <script data-inline="vega-lite">/*!VEGA*/</script>
+  <script data-inline="vega-lite-init">/*!VEGA_INIT*/</script>
+</body>
+</html>

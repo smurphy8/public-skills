@@ -27,12 +27,50 @@ ASD-STE100 Simplified Technical English.
 
 ## Install
 
-Skills sync into agent skill roots via [`Kyure-A/agent-skills-nix`](https://github.com/Kyure-A/agent-skills-nix).
-The flake discovers every `SKILL.md` under each `<provider>/skills/` directory
-and copy-tree-syncs the catalog.
+Two paths. Use the script if you just want the skills; use Nix if you want the
+install to be reproducible and declarative. Both produce the same layout, so you
+can start with one and switch later.
 
 **Do not symlink this repository into an agent skill root.** Tool-discovery
 walkers reject or silently skip symlinked directories.
+
+## Install without Nix
+
+Needs only `bash` and `git`.
+
+```bash
+git clone https://github.com/smurphy8/public-skills.git
+cd public-skills
+./scripts/install.sh
+```
+
+That copies every skill into `~/.claude/skills` and `~/.agents/skills`. Restart
+your agent afterwards to pick them up.
+
+```bash
+./scripts/install.sh --list                # what is available
+./scripts/install.sh --skill explainer     # just one (repeatable)
+./scripts/install.sh --target claude       # one destination
+./scripts/install.sh --local               # ./.claude/skills, ./.agents/skills
+./scripts/install.sh --dest ~/somewhere    # an explicit skills root
+./scripts/install.sh --dry-run             # print actions, change nothing
+./scripts/install.sh --uninstall           # remove what this repo installed
+```
+
+Known targets: `claude`, `agents`, `codex`, `opencode`, `copilot`, `cursor`,
+`windsurf`. Destinations match the Nix defaults, and `CLAUDE_CONFIG_DIR` and
+`CODEX_HOME` are honored.
+
+Installing replaces a skill directory rather than merging into it, so a file
+deleted upstream does not survive an update. To update, `git pull` and re-run.
+The script verifies afterwards that every skill is a real directory holding a
+real `SKILL.md`.
+
+## Install with Nix
+
+Skills sync into agent skill roots via [`Kyure-A/agent-skills-nix`](https://github.com/Kyure-A/agent-skills-nix).
+The flake discovers every `SKILL.md` under each `<provider>/skills/` directory
+and copy-tree-syncs the catalog.
 
 ### Prerequisites
 
@@ -118,10 +156,15 @@ Every `copy-tree` destination is **Nix-owned**. Files placed there by other
 means are unsupported and `rsync --delete` removes them on the next sync. To
 add a skill of your own, fork this repository and add it to the catalog.
 
+The script install is narrower: it only ever touches the skill directories this
+repository provides, so anything else you keep in a skills root is left alone.
+
+## Notes for both paths
+
 ### Migrating from a symlinked install
 
 If you previously symlinked a skills directory into an agent root, remove those
-symlinks before the first `copy-tree` sync. Find them:
+symlinks before installing either way. Find them:
 
 ```bash
 find ~/.claude/skills ~/.agents/skills ~/.codex/skills \
@@ -137,6 +180,8 @@ your own content.
 agents/
   skills/
     explainer/          SKILL.md, scripts/, assets/, references/
+scripts/
+  install.sh            non-Nix installer
 nix/
   sources.nix           provider directories the walker scans
   public-allowlist.nix  what may be published
@@ -144,7 +189,11 @@ nix/
 flake.nix
 ```
 
-Skill folder names are globally unique across providers, lowercase with hyphens.
+Skills install **flat**: `<provider>/skills/<id>/` becomes `<skills-root>/<id>/`.
+Agent tooling scans one level below the skills root, so a nested provider
+directory would hide everything inside it. Both install paths do this, which is
+why skill folder names must be globally unique across providers — lowercase,
+digits, and hyphens.
 
 ## Contributing
 

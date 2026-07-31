@@ -3,4 +3,5 @@
   publicSources = [ "agents" ];
   publicPrefixes = [ "agents" ];
   extraPaths = [ "AGENTS.md" "LICENSE" "README.md" "CONTRIBUTING.md" "THIRD-PARTY-NOTICES.md" "docs/public-readiness.md" ".gitignore" ];
+  generatedPaths = [ "flake.nix" "flake.lock" "nix/home.nix" "nix/sources.nix" "nix/public-allowlist.nix" ];
 }

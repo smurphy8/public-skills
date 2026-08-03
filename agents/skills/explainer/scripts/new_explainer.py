@@ -24,8 +24,12 @@ ALLOWED_INLINE_SCRIPTS = ("mermaid", "mermaid-init", "vega-lite", "vega-lite-ini
 VEGA_INIT_JS = (
     "document.querySelectorAll('pre.vega-lite').forEach(function(pre){"
     "try{var spec=JSON.parse(pre.dataset.spec||pre.textContent);"
-    "var container=document.createElement('div');pre.after(container);"
-    "vegaEmbed(container,spec,{renderer:'svg',actions:false});}"
+    "var container=document.createElement('div');"
+    "container.style.display='block';container.style.width='100%';"
+    "pre.after(container);"
+    "vegaEmbed(container,spec,{renderer:'svg',actions:false})"
+    ".then(function(){pre.classList.add('rendered');})"
+    ".catch(function(e){console.error('vega-lite render failed:',e);});}"
     "catch(e){console.error('vega-lite render failed:',e);}});"
 )
 

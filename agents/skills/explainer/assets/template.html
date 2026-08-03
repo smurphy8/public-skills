@@ -178,6 +178,13 @@
       color: inherit;
     }
 
+    /* A vega-lite source block is hidden only once its chart has embedded.
+       On failure the class is never added, so the spec stays visible as a
+       diagnostic instead of leaving a blank gap. */
+    pre.vega-lite.rendered {
+      display: none;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;

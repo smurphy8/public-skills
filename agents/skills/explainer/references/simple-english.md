@@ -4,7 +4,7 @@ Adapted from [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish) (
 
 The standard is **ASD-STE100 Issue 9 (2025-01-15)**, Simplified Technical English. STE is the controlled language that aerospace and defense manufacturers use for maintenance documentation. The rules exist so a tired reader who is not a native English speaker cannot misread a sentence. They remove the usual markers of model-generated prose as a side effect: long sentences, synonym rotation, hedges, filler, and decorative clauses.
 
-`SKILL.md` carries the 13 constraints that fire on every sentence. This file is the full catalog. Open it when you must adjudicate a specific case: a part-of-speech ruling, the parentheses rule, a possessive apostrophe, the full audit checklist.
+`SKILL.md` carries the 13 constraints that fire on every sentence, plus the 8 `## Narrative` obligations that keep the standard from flattening expository prose. This file is the full catalog. Open it when you must adjudicate a specific case: a part-of-speech ruling, the parentheses rule, a possessive apostrophe, the full audit checklist, or [how agents over-apply these rules in practice](#this-repositorys-findings-on-over-application).
 
 ## Two warnings before you use this file
 
@@ -154,6 +154,8 @@ Never bury the instruction after the explanation. The pattern transfers directly
 | 8.6 | Count as one word each of these: a number, a number with units, an abbreviation, an alphanumeric identifier, quoted text, a title, a label, a proper noun. |
 | 8.7 | A hyphenated word counts as one word. |
 
+**Ruling — Rule 8.1 bans the semicolon and NOTHING else.** Read the rule as written. The em dash is legal, the colon is legal, and Rule 8.4 rules on how a lead-in colon affects the word count, which presupposes that you can write one. Do not generalise the semicolon ban to any other mark. This ruling exists because the generalisation is measured behaviour, not a theoretical risk: across 93 explainers, em dashes fell 88 % and colons 57 % after the standard landed, tracking the semicolon's fall to zero, and no rule asked for either. See [This repository's findings](#this-repositorys-findings-on-over-application).
+
 Rule 8.6 is what makes the caps workable in technical prose. A backticked command is quoted text and counts as one word, so a long identifier does not consume the sentence budget.
 
 Worked count — this sentence is **8 words**, not 13:
@@ -292,12 +294,24 @@ The explainer skill extends this list. See [Explainer adaptations](#explainer-ad
 
 ## Self-check before you deliver
 
-**This step is not optional.** Run these four checks on the draft before you call `--validate`.
+**This step is not optional.** `SKILL.md` carries the authoritative two-part version. This is the same check in full.
+
+Run both parts against the prose **as it stands in the written file**, never against a draft held in your context. A check run before injection measures text you then edit, so its result does not describe what you ship.
+
+### Part A — violations
 
 1. **Longest sentences.** Count the words in the three longest sentences. Split any sentence that is over its classification's cap — 20 words procedural, 25 words descriptive. Apply Rule 8.6 when you count.
-2. **Searchable-pattern sweep.** Search the draft for each of these literal strings: `'ll`, `'re`, `'ve`, `n't`, `it's`, `has been`, `have been`, `had been`, `should`, `would`, `may`, `might`, `could`, `is being`, `, making`, `, allowing`, `, enabling`, `, ensuring`, `;`, `e.g.`, `i.e.`, `etc.` Every hit outside the Untouchables is a violation. Fix each one.
+2. **Searchable-pattern sweep.** Search for each of these literal strings: `'ll`, `'re`, `'ve`, `n't`, `it's`, `has been`, `have been`, `had been`, `should`, `would`, `may`, `might`, `could`, `is being`, `, making`, `, allowing`, `, enabling`, `, ensuring`, `;`, `e.g.`, `i.e.`, `etc.` Every hit outside the Untouchables is a violation. Fix each one. This list is complete as written: the em dash and the colon are NOT on it, per the Rule 8.1 ruling in Section 8.
 3. **Condition placement.** Search for every `if` and every `when`. Move any condition that trails its command to the start of its sentence, and add a comma.
 4. **Unchosen synonyms.** Search for the members of the check / verify / confirm / validate set that you did NOT choose, and for `config` / `settings` if that pair was not fixed. Replace every hit with the chosen term.
+
+### Part B — texture
+
+Every step in Part A searches for material to delete, so Part A cannot fail a document for being lifeless. Part B can. Run it AFTER Part A, because Part A splits and deletes and would undo this work.
+
+5. **Distribution.** Count the Rule 8.6 length of every sentence and inspect the spread. The target is two-sided. Too tight or too short — a band narrower than about 6 words, or fewer than about one sentence in five at 18 to 25 words — is repaired by combining related short claims into one sentence that carries a joint: a subordinate clause, an em-dash aside, or a colon. Too long — more than about one sentence in three at 18 to 25 words, or fewer than about one in six at 8 words or less — is repaired by splitting the flabbiest long sentences so a short one can carry the verdict. NEVER pad a sentence with filler.
+6. **Devices.** Confirm that the deck and the conclusion assert the thesis, that at least one analogy or worked example appears where the subject has a mechanism to make legible, and that the author's voice is present where the author is the agent.
+7. **Re-measure after any repair.** A repair under step 5 changes the distribution it was measured against, and a split under Part A creates the clustering step 5 looks for. After your last edit to the file, measure the spread once more.
 
 ### Full audit checklist
 
@@ -338,14 +352,38 @@ Adapted from the upstream `references/checklist.md`. Run this pass when the four
 
 ## Explainer adaptations
 
-An explainer is expository prose with a thesis, not a maintenance manual. Applied literally, the standard degrades it: uniform short sentences, deleted analogies, and a hedged thesis. These six carve-outs are as load-bearing as the rules they qualify. They are also stated in `SKILL.md`, because an agent that reads only `SKILL.md` still needs them.
+An explainer is expository prose with a thesis, not a maintenance manual. Applied literally, the standard degrades it: uniform sentences, deleted analogies, and a hedged thesis. `SKILL.md` carries these as the eight numbered obligations of its `## Narrative` section, stated in the imperative and carrying the same force as the 13 constraints. They are stated there rather than only here, because an agent that reads only `SKILL.md` still needs them.
 
-1. **A thesis is permitted.** The deck and the concluding passage can assert a claim. A claim is a fact the author stands behind ("Batching at the edge is the wrong layer to optimise"), not a hedge. Banned modals and hedging language remain banned. Asserting is not hedging.
-2. **Sentence variety is permitted under the caps.** The caps are ceilings, not targets. A document whose sentences are all the same short length violates the spirit of Rule 4.2, which exists to forbid telegraph style. Vary length freely below the limit.
-3. **Analogies and concrete examples are kept.** A resemblance is a fact about the subject, not decoration. Section 9 filler deletion does not license the removal of the worked example or of the analogy that makes a mechanism legible.
-4. **Untouchables extend to quoted source material.** Text inside `<blockquote>`, `<code>`, `<pre>`, `<math>`, and any Vega-Lite JSON spec is never rewritten for compliance. A quotation drawn from a `--from-file` source is reproduced exactly, including its own violations.
-5. **Figure captions take the descriptive limit** (25 words) and are never imperative.
-6. **Marketing register stays out of scope.** The standard deletes persuasion by design and this skill does not restore it. An explainer explains. It does not sell.
+They are obligations, not permissions. That wording is deliberate and it was earned: see [This repository's findings](#this-repositorys-findings-on-over-application) below.
+
+1. **Assert the thesis.** State a claim in the deck and in the concluding passage, and stand behind it ("Batching at the edge is the wrong layer to optimise"). Banned modals and hedging language remain banned. Asserting is not hedging, and neutral description does not substitute for a claim.
+2. **Vary sentence length across the full range below the cap.** The caps are ceilings, never targets. Both a document of uniformly short sentences and a document of uniformly long ones violate the spirit of Rule 4.2, which exists to forbid telegraph style. The target is two-sided, and `SKILL.md` carries the calibration figures.
+3. **Keep the analogy and the worked example.** A resemblance is a fact about the subject, not decoration. Section 9 filler deletion does not license the removal of the worked example or of the analogy that makes a mechanism legible.
+4. **Write in the author's own voice where the author is the agent.** First-person reference is legal, and Rule 3.6 often requires it, because active voice needs a named agent. A correction memo states "My earlier figure was wrong".
+5. **Let each paragraph carry a developed thought.** Hold to Rule 6.5 and Rule 6.6. A thought split across two paragraphs to stay under the sentence cap is fragmented, not clarified.
+6. **Reproduce quoted source material exactly.** Text inside `<blockquote>`, `<code>`, `<pre>`, `<math>`, and any Vega-Lite JSON spec is never rewritten for compliance. A quotation drawn from a `--from-file` source is reproduced exactly, including its own violations.
+7. **Write figure captions to the descriptive limit** (25 words), and never in the imperative.
+8. **Leave marketing register out.** The standard deletes persuasion by design and this skill does not restore it. An explainer explains. It does not sell.
+
+## This repository's findings on over-application
+
+**This section is this repository's, not an ASD ruling.** It records how agents misread the rules above, measured rather than supposed. Nothing here is in the standard.
+
+The measurement: 93 explainers from one author on one subject across one week, 108,814 words of prose, split by whether they were written before or after this standard landed. Method and full tables in the archived change at `openspec/changes/archive/2026-08-03-restore-explainer-narrative-texture/evidence/corpus-measurement.md`.
+
+The standard worked. Banned modals fell 96 %, semicolons to zero, over-cap sentences 93 %. It also cost four things, and three of them are misreadings of rules that do not say what the agent thought they said.
+
+| Over-application | What the rules actually say | Correction |
+|---|---|---|
+| **1. The cap read as a target.** The mean sentence barely moved (12.64 to 12.28 words) but the 18-to-25-word band fell from 24.1 % to 19.2 % and the spread narrowed 10 %. The long tail died while the average held. The corpus left 12.5 words of headroom unused under a 25-word cap. | Rule 5.1 and Rule 6.3 give maxima. Rule 4.2 forbids telegraph style, which is the opposite failure and is stated just as plainly. | Obligation 2, with a two-sided target. A document whose sentences cluster fails even when every sentence passes the cap. |
+| **2. The `;` sweep generalised.** Em dashes fell 88 % and colons 57 %, tracking the semicolon's fall to zero. | Rule 8.1 bans the semicolon and nothing else. Rule 8.4 rules on the lead-in colon's word count, which presupposes the colon is legal. | The Rule 8.1 ruling in Section 8, plus the Part A step 2 note that the sweep list is closed. |
+| **3. First person suppressed.** First-person reference fell 37 %. | No rule restricts it. Rule 3.6 mandates active voice, which requires a named agent — and where the agent is the author, that word is "I". | Obligation 4. "I patched the file" is MORE compliant than "the file was patched". |
+| **4. Paragraphs fragmented.** 38 % more paragraphs per document, each 14 % shorter. | Rule 6.6 caps a paragraph at six sentences. Shorter sentences mean six of them cover less ground, so the cap bites harder than intended. | Obligation 5. This one repairs itself once obligation 2 restores the long sentence, so Rule 6.6 needs no change. |
+
+Two second-order findings worth keeping:
+
+- **The em dash and the long sentence are one loss.** The dash is what lets a sentence carry a second thought without splitting in two. Restoring it is what makes obligation 2 achievable rather than merely required.
+- **Correcting a floor invites overshooting it.** The first document drafted under obligation 2 landed at 50 % of sentences in the 18-to-25-word band against a 24.1 % baseline, with short sentences down to 13.5 %. It used zero filler, so it complied honestly and optimised anyway. Hence the two-sided target: a floor with no ceiling has only one direction to move in.
 
 ## Limits
 

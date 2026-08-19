@@ -4,7 +4,7 @@ Adapted from [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish) (
 
 The standard is **ASD-STE100 Issue 9 (2025-01-15)**, Simplified Technical English. STE is the controlled language that aerospace and defense manufacturers use for maintenance documentation. The rules exist so a tired reader who is not a native English speaker cannot misread a sentence. They remove the usual markers of model-generated prose as a side effect: long sentences, synonym rotation, hedges, filler, and decorative clauses.
 
-`SKILL.md` carries the 13 constraints that fire on every sentence, plus the 8 `## Narrative` obligations that keep the standard from flattening expository prose. This file is the full catalog. Open it when you must adjudicate a specific case: a part-of-speech ruling, the parentheses rule, a possessive apostrophe, the full audit checklist, or [how agents over-apply these rules in practice](#this-repositorys-findings-on-over-application).
+`SKILL.md` carries the 14 constraints that fire on every sentence, plus the 8 `## Narrative` obligations that keep the standard from flattening expository prose. This file is the full catalog. Open it when you must adjudicate a specific case: a part-of-speech ruling, the parentheses rule, a possessive apostrophe, the full audit checklist, or [how agents over-apply these rules in practice](#this-repositorys-findings-on-over-application).
 
 ## Two warnings before you use this file
 
@@ -292,6 +292,40 @@ These are technical names (Rules 1.5, 8.6). Leave them exact, even where they br
 
 The explainer skill extends this list. See [Explainer adaptations](#explainer-adaptations).
 
+## This repository's ruling on pointers and indexes
+
+**This section is this repository's, not an ASD ruling.** The standard legislates referents, and it scopes that legislation to pronouns and demonstratives. The extension to numbered pointers is ours.
+
+`SKILL.md` carries it as constraint 14: gloss every pointer on first use, and name in plain words what it points at, in the same sentence. A pointer is a reference whose referent the reader cannot recover from the reference itself — a section or step number, a table or figure number, a rule number, a ticket identifier, an internal code. A self-describing name is not a pointer. `Postgres 16`, `--validate`, and `assets/template.html` each name their own referent, so no gloss is owed.
+
+**Three upstream anchors, and the scope limit that makes this an extension.**
+
+| Anchor | What it says | Why it does not reach a numbered pointer |
+|---|---|---|
+| GR-3 | Give every pronoun a clear referent. | Scoped to pronouns. |
+| GR-4 | Prefer "this + noun" over a bare "this". | Scoped to demonstratives. |
+| Rule 8.6 | A label counts as one word. | A counting rule. It says a label is cheap, never that a label is clear. |
+
+GR-4 is the instructive one. A bare "this" stands in for a noun that the writer holds and the reader must guess, and a bare `4c` does exactly that. The logic transfers and the scope does not, so this ruling is stated as ours.
+
+**The deletion test.** Delete every pointer from the sentence. If the sentence still states its claim, the pointers annotate a stated fact and no gloss is owed. If the sentence collapses, the pointers ARE the claim and each one must name its referent.
+
+The test needs to fail the right sentences and pass the rest, so both directions are worked here:
+
+- **Fails.** `In Section 5a we look to implement o6f3 but must keep in mind 4c, 4d in order to fully realize the goal (T77).` Delete the five pointers and the residue is `In Section we look to implement but must keep in mind , in order to fully realize the goal ()`. Nothing survives.
+- **Passes.** `Rule 8.6 makes a figure-dense sentence cheap, because a backticked command counts as one word.` Delete the pointer and the sentence still states its claim. No gloss is owed.
+
+**Worked before/after**, on the sentence that prompted the rule:
+
+**Before:** In Section 5a we look to implement o6f3 but must keep in mind 4c, 4d in order to fully realize the goal (T77).
+**After:** Section 5a, on the ingest rewrite, implements the `o6f3` batching path. That path depends on two earlier decisions: 4c, which fixes the retry budget, and 4d, which fixes the dead-letter queue. Ticket T77 tracks the work.
+
+Two things about that pair are worth stating plainly. First, the "before" passes every other constraint: no banned modal, no semicolon, no contraction, no present perfect, no trailing condition, and 15 Rule 8.6 words against a 25-word cap. Second, applying the Section 9 filler rules to it produces `Section 5a implements o6f3, which depends on 4c and 4d (T77).` — shorter, cleaner, and still unreadable. **A standard whose full application leaves a sentence unreadable is missing a constraint.** That is the argument for constraint 14, and the deletion test is what keeps it from firing everywhere.
+
+Constraint 14 pushes against three rules, and each conflict is settled in the agent's always-loaded file: a gloss states a fact, so Section 9 filler deletion does not take it; the pointer's own text is an Untouchable, so the gloss goes beside it and never replaces it; and where a gloss breaches Rule 5.1 or Rule 6.3, the sentence splits and the gloss stays.
+
+**What this ruling is NOT built on.** The [over-application findings](#this-repositorys-findings-on-over-application) below rest on a 93-explainer corpus measurement. This one does not. **No pointer-density measurement of that corpus was made**, before or after the standard landed, so no figure is claimed here. The ruling rests on one reported failure and on the rule-gap analysis recorded in `openspec/changes/archive/2026-08-19-add-explainer-pointer-gloss-rule/design.md`. It sits next to measured findings, so the distinction is stated rather than left for a reader to assume.
+
 ## Self-check before you deliver
 
 **This step is not optional.** `SKILL.md` carries the authoritative two-part version. This is the same check in full.
@@ -300,22 +334,23 @@ Run both parts against the prose **as it stands in the written file**, never aga
 
 ### Part A — violations
 
-1. **Longest sentences.** Count the words in the three longest sentences. Split any sentence that is over its classification's cap — 20 words procedural, 25 words descriptive. Apply Rule 8.6 when you count.
-2. **Searchable-pattern sweep.** Search for each of these literal strings: `'ll`, `'re`, `'ve`, `n't`, `it's`, `has been`, `have been`, `had been`, `should`, `would`, `may`, `might`, `could`, `is being`, `, making`, `, allowing`, `, enabling`, `, ensuring`, `;`, `e.g.`, `i.e.`, `etc.` Every hit outside the Untouchables is a violation. Fix each one. This list is complete as written: the em dash and the colon are NOT on it, per the Rule 8.1 ruling in Section 8.
-3. **Condition placement.** Search for every `if` and every `when`. Move any condition that trails its command to the start of its sentence, and add a comma.
-4. **Unchosen synonyms.** Search for the members of the check / verify / confirm / validate set that you did NOT choose, and for `config` / `settings` if that pair was not fixed. Replace every hit with the chosen term.
+1. **Pointer sweep — first, before the length count.** Search for `\b[0-9]+[a-z]\b` (catches `5a`, `4c`), for `\b[A-Z][0-9]+\b` (catches `T77`), for `\b[a-z]+[0-9]+[a-z][a-z0-9]*\b` (catches a lowercase internal code such as `o6f3`), and for `Section`, `Rule`, `Step`, `Table`, `Figure`, and `Appendix` followed by a number. Apply the deletion test to each hit, then gloss on first use, per [the pointer ruling](#this-repositorys-ruling-on-pointers-and-indexes). The patterns over-match on purpose: a surfaced pointer that needs no gloss costs one judgment call, and a missed pointer costs the reader the sentence. **This step runs first because a gloss adds words.** A length count taken before the gloss measures text that no longer exists, and the split it prescribes lands on a sentence the gloss then lengthens again.
+2. **Longest sentences.** Count the words in the three longest sentences. Split any sentence that is over its classification's cap — 20 words procedural, 25 words descriptive. Apply Rule 8.6 when you count.
+3. **Searchable-pattern sweep.** Search for each of these literal strings: `'ll`, `'re`, `'ve`, `n't`, `it's`, `has been`, `have been`, `had been`, `should`, `would`, `may`, `might`, `could`, `is being`, `, making`, `, allowing`, `, enabling`, `, ensuring`, `;`, `e.g.`, `i.e.`, `etc.` Every hit outside the Untouchables is a violation. Fix each one. This list is complete as written: the em dash and the colon are NOT on it, per the Rule 8.1 ruling in Section 8.
+4. **Condition placement.** Search for every `if` and every `when`. Move any condition that trails its command to the start of its sentence, and add a comma.
+5. **Unchosen synonyms.** Search for the members of the check / verify / confirm / validate set that you did NOT choose, and for `config` / `settings` if that pair was not fixed. Replace every hit with the chosen term.
 
 ### Part B — texture
 
 Every step in Part A searches for material to delete, so Part A cannot fail a document for being lifeless. Part B can. Run it AFTER Part A, because Part A splits and deletes and would undo this work.
 
-5. **Distribution.** Count the Rule 8.6 length of every sentence and inspect the spread. The target is two-sided. Too tight or too short — a band narrower than about 6 words, or fewer than about one sentence in five at 18 to 25 words — is repaired by combining related short claims into one sentence that carries a joint: a subordinate clause, an em-dash aside, or a colon. Too long — more than about one sentence in three at 18 to 25 words, or fewer than about one in six at 8 words or less — is repaired by splitting the flabbiest long sentences so a short one can carry the verdict. NEVER pad a sentence with filler.
-6. **Devices.** Confirm that the deck and the conclusion assert the thesis, that at least one analogy or worked example appears where the subject has a mechanism to make legible, and that the author's voice is present where the author is the agent.
-7. **Re-measure after any repair.** A repair under step 5 changes the distribution it was measured against, and a split under Part A creates the clustering step 5 looks for. After your last edit to the file, measure the spread once more.
+6. **Distribution.** Count the Rule 8.6 length of every sentence and inspect the spread. The target is two-sided. Too tight or too short — a band narrower than about 6 words, or fewer than about one sentence in five at 18 to 25 words — is repaired by combining related short claims into one sentence that carries a joint: a subordinate clause, an em-dash aside, or a colon. Too long — more than about one sentence in three at 18 to 25 words, or fewer than about one in six at 8 words or less — is repaired by splitting the flabbiest long sentences so a short one can carry the verdict. NEVER pad a sentence with filler.
+7. **Devices.** Confirm that the deck and the conclusion assert the thesis, that at least one analogy or worked example appears where the subject has a mechanism to make legible, and that the author's voice is present where the author is the agent.
+8. **Re-measure after any repair.** A repair under step 6 changes the distribution it was measured against, and a split under Part A creates the clustering step 6 looks for. After your last edit to the file, measure the spread once more.
 
 ### Full audit checklist
 
-Adapted from the upstream `references/checklist.md`. Run this pass when the four-step check finds a lot, or when the explainer is long. The checks are ordered from mechanical to judgment.
+Adapted from the upstream `references/checklist.md`. Run this pass when the two-part check above finds a lot, or when the explainer is long. The checks are ordered from mechanical to judgment.
 
 **Mechanical (searchable).** Every hit outside the Untouchables is a violation.
 
@@ -331,6 +366,7 @@ Adapted from the upstream `references/checklist.md`. Run this pass when the four
 | `e.g.`, `i.e.`, `etc.` | Latin abbreviation (GR-6) | "for example", "that is", name the items. |
 | `simply`, `just`, `easily`, `seamlessly`, `robust` | Filler, carries no fact | Delete. |
 | ` if `, ` when ` (mid-sentence) | Trailing condition (Rule 5.4) | Move the condition to the start, add a comma. |
+| `\b[0-9]+[a-z]\b`, `\b[A-Z][0-9]+\b`, `\b[a-z]+[0-9]+[a-z][a-z0-9]*\b`, `Section`/`Rule`/`Step`/`Table`/`Figure`/`Appendix` + number | Bare pointer, referent not recoverable (this repo's constraint 14) | Apply the deletion test, then gloss on first use. |
 
 **Countable.**
 
@@ -352,7 +388,7 @@ Adapted from the upstream `references/checklist.md`. Run this pass when the four
 
 ## Explainer adaptations
 
-An explainer is expository prose with a thesis, not a maintenance manual. Applied literally, the standard degrades it: uniform sentences, deleted analogies, and a hedged thesis. `SKILL.md` carries these as the eight numbered obligations of its `## Narrative` section, stated in the imperative and carrying the same force as the 13 constraints. They are stated there rather than only here, because an agent that reads only `SKILL.md` still needs them.
+An explainer is expository prose with a thesis, not a maintenance manual. Applied literally, the standard degrades it: uniform sentences, deleted analogies, and a hedged thesis. `SKILL.md` carries these as the eight numbered obligations of its `## Narrative` section, stated in the imperative and carrying the same force as the 14 constraints. They are stated there rather than only here, because an agent that reads only `SKILL.md` still needs them.
 
 They are obligations, not permissions. That wording is deliberate and it was earned: see [This repository's findings](#this-repositorys-findings-on-over-application) below.
 
@@ -376,7 +412,7 @@ The standard worked. Banned modals fell 96 %, semicolons to zero, over-cap sente
 | Over-application | What the rules actually say | Correction |
 |---|---|---|
 | **1. The cap read as a target.** The mean sentence barely moved (12.64 to 12.28 words) but the 18-to-25-word band fell from 24.1 % to 19.2 % and the spread narrowed 10 %. The long tail died while the average held. The corpus left 12.5 words of headroom unused under a 25-word cap. | Rule 5.1 and Rule 6.3 give maxima. Rule 4.2 forbids telegraph style, which is the opposite failure and is stated just as plainly. | Obligation 2, with a two-sided target. A document whose sentences cluster fails even when every sentence passes the cap. |
-| **2. The `;` sweep generalised.** Em dashes fell 88 % and colons 57 %, tracking the semicolon's fall to zero. | Rule 8.1 bans the semicolon and nothing else. Rule 8.4 rules on the lead-in colon's word count, which presupposes the colon is legal. | The Rule 8.1 ruling in Section 8, plus the Part A step 2 note that the sweep list is closed. |
+| **2. The `;` sweep generalised.** Em dashes fell 88 % and colons 57 %, tracking the semicolon's fall to zero. | Rule 8.1 bans the semicolon and nothing else. Rule 8.4 rules on the lead-in colon's word count, which presupposes the colon is legal. | The Rule 8.1 ruling in Section 8, plus the Part A step 3 note that the sweep list is closed. |
 | **3. First person suppressed.** First-person reference fell 37 %. | No rule restricts it. Rule 3.6 mandates active voice, which requires a named agent — and where the agent is the author, that word is "I". | Obligation 4. "I patched the file" is MORE compliant than "the file was patched". |
 | **4. Paragraphs fragmented.** 38 % more paragraphs per document, each 14 % shorter. | Rule 6.6 caps a paragraph at six sentences. Shorter sentences mean six of them cover less ground, so the cap bites harder than intended. | Obligation 5. This one repairs itself once obligation 2 restores the long sentence, so Rule 6.6 needs no change. |
 

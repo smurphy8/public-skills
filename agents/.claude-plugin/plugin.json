@@ -1,7 +1,7 @@
 {
   "name": "explainer",
   "displayName": "Explainer",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "Create temporary, typography-first HTML explainers.",
   "author": {
     "name": "Scott Murphy"

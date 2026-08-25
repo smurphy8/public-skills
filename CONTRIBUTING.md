@@ -78,6 +78,38 @@ dependencies inline with PEP 723:
 # ///
 ```
 
+## Versioning a skill
+
+A skill that carries a `CHANGELOG.md` follows [semver](https://semver.org/).
+
+**While the major version is `0`, a breaking change takes the minor slot.**
+Pre-1.0 semver has nowhere else to put one. For a skill whose product is a
+standard rather than an API, "breaking" means a document or config that complied
+with the previous version does not comply with this one. A defect fix that
+changes no rule and no interface takes the patch slot.
+
+**The changelog entry lands in the same commit as the change it records.** A
+changelog written later is a changelog reconstructed from `git log`, and the
+reconstruction is guesswork about intent that was obvious at the time. The
+explainer's history had to be recovered this way once; that is the reason this
+section exists.
+
+**`CHANGELOG.md` is authoritative and `plugin.json` mirrors it.** The order
+matters because only one of them installs. The bundler and `scripts/install.sh`
+copy `<provider>/skills/<id>/` and nothing above it, so a manifest at
+`<provider>/.claude-plugin/plugin.json` is invisible to an installed skill —
+deliberately, and the canonical spec asserts it. A version stated only in a
+manifest cannot be read by the person holding the skill. Put the changelog in the
+skill directory and bump the manifests to match.
+
+Do not add a `version:` key to `SKILL.md` frontmatter. Frontmatter is `name`,
+`description`, and optionally `allowed-tools`. A third copy of the version would
+sit in the file most certain to be read while being the easiest to forget.
+
+**A documentation-only change does not bump the version.** A bump asserts that
+the skill changed. If no rule, script, template, asset, or output moved, leave
+the number alone.
+
 ## Publishing a skill
 
 A skill becomes public only by being added to `publicSources` in

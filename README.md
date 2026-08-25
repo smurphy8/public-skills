@@ -24,6 +24,10 @@ ASD-STE100 Simplified Technical English.
 - Create: `--title <t> --subtitle <s> [--from-file <path>] [--output <dir>]`
 - Lint an existing file: `--validate <path>`
 - Output: one `.html` file under `$TMPDIR/explainers/` by default
+- Version: **0.4.0** — see
+  [`CHANGELOG.md`](agents/skills/explainer/CHANGELOG.md). The major version is
+  `0` because the prose standard still changes in ways that make an older
+  document non-compliant.
 
 ## Install
 

@@ -149,12 +149,26 @@ def create_document(
 
     if from_files:
         # Inject one <!-- SOURCE: <abs> --> per file, in order, immediately
-        # above the content marker. Do NOT read or embed the file itself.
+        # above the content marker, and a visible Sources list of file://
+        # links below it. Do NOT read or embed the file itself.
         source_lines = "".join(
             f"      <!-- SOURCE: {p} -->\n" for p in from_files
         )
+        source_items = "".join(
+            f'          <li><a href="{html.escape(p.as_uri())}">'
+            f"{html.escape(str(p))}</a></li>\n"
+            for p in from_files
+        )
+        sources_section = (
+            '\n      <section class="sources">\n'
+            "        <h2>Sources</h2>\n"
+            f"        <ul>\n{source_items}        </ul>\n"
+            "      </section>"
+        )
         rendered = rendered.replace(
-            CONTENT_MARKER, source_lines + f"      {CONTENT_MARKER}", 1
+            CONTENT_MARKER,
+            source_lines + f"      {CONTENT_MARKER}" + sources_section,
+            1,
         )
 
     output_path.write_text(rendered, encoding="utf-8")
@@ -172,6 +186,12 @@ _STYLESHEET_RE = re.compile(
 )
 _MATH_RE = re.compile(r"<math\b([^>]*)>", flags=re.IGNORECASE)
 _PLACEHOLDER_RE = re.compile(r"\{\{[A-Z_]+\}\}")
+_SOURCE_COMMENT_RE = re.compile(r"<!-- SOURCE: (.+?) -->")
+_ARTICLE_RE = re.compile(r"<article\b.*?</article>", flags=re.IGNORECASE | re.DOTALL)
+_PRE_RE = re.compile(r"<pre\b.*?</pre>", flags=re.IGNORECASE | re.DOTALL)
+_ANCHOR_RE = re.compile(r"<a\b.*?</a>", flags=re.IGNORECASE | re.DOTALL)
+# An inline <code> whose whole text is an absolute or home-relative path.
+_CODE_PATH_RE = re.compile(r"<code>((?:/|~/)[^<\s]*/[^<\s]*)</code>")
 
 
 def _check_script_allowlist(content: str) -> tuple[list[str], str]:
@@ -278,6 +298,21 @@ def validate_document(raw_path: str) -> tuple[list[str], list[str]]:
                 'xmlns="http://www.w3.org/1998/Math/MathML"'
             )
 
+    # File links: every --from-file source must stay linked, so a reader can
+    # open it. The create step renders the links, and this catches their loss.
+    for m in _SOURCE_COMMENT_RE.finditer(stripped):
+        uri = Path(m.group(1)).as_uri()
+        if f'href="{uri}"' not in stripped and f'href="{html.escape(uri)}"' not in stripped:
+            errors.append(f"source `{m.group(1)}` has no `{uri}` link in the document")
+
+    # Warning (not an error): an absolute path in inline prose code that is not
+    # inside a link. Code blocks are exempt, because they quote, not reference.
+    article = _ARTICLE_RE.search(stripped)
+    if article:
+        prose = _ANCHOR_RE.sub("", _PRE_RE.sub("", article.group(0)))
+        for path_text in sorted(set(_CODE_PATH_RE.findall(prose))):
+            warnings.append(f"path `{path_text}` is not a file:// link")
+
     return errors, warnings
 
 
@@ -296,7 +331,8 @@ def parse_args() -> argparse.Namespace:
         help=(
             "Absolute or relative path to a source doc; the resolved path is "
             "recorded inside the rendered HTML as a <!-- SOURCE: ... --> "
-            "comment for the invoking agent to consume. Repeatable."
+            "comment for the invoking agent to consume, and listed as a "
+            "file:// link in a visible Sources section. Repeatable."
         ),
     )
     parser.add_argument(

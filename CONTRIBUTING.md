@@ -78,9 +78,13 @@ dependencies inline with PEP 723:
 # ///
 ```
 
-## Versioning a skill
+## Versioning a skill family
 
-A skill that carries a `CHANGELOG.md` follows [semver](https://semver.org/).
+A skill family is a provider directory: `onping/`, `ramp/`, `agents/`, and so on.
+A versioned family carries **one** `CHANGELOG.md` at its root, for example
+`onping/CHANGELOG.md`, and follows [semver](https://semver.org/). A changelog per
+skill is too granular to be useful: most changes touch several skills of a family
+at once, and a reader wants one place to see what moved and when.
 
 **While the major version is `0`, a breaking change takes the minor slot.**
 Pre-1.0 semver has nowhere else to put one. For a skill whose product is a
@@ -94,21 +98,23 @@ reconstruction is guesswork about intent that was obvious at the time. The
 explainer's history had to be recovered this way once; that is the reason this
 section exists.
 
-**`CHANGELOG.md` is authoritative and `plugin.json` mirrors it.** The order
-matters because only one of them installs. The bundler and `scripts/install.sh`
-copy `<provider>/skills/<id>/` and nothing above it, so a manifest at
-`<provider>/.claude-plugin/plugin.json` is invisible to an installed skill —
-deliberately, and the canonical spec asserts it. A version stated only in a
-manifest cannot be read by the person holding the skill. Put the changelog in the
-skill directory and bump the manifests to match.
+**A family changelog does not install with its skills.** The bundler and
+`scripts/install.sh` copy `<provider>/skills/<id>/` and nothing above it, so read
+the family changelog in the repository. Each entry names the skills it touches.
+
+**`CHANGELOG.md` is authoritative and `plugin.json` mirrors it.** A family with
+plugin manifests bumps them to match the changelog. `explainer` predates the
+family rule. It is a one-skill family, so its changelog sits in the skill
+directory, `agents/skills/explainer/CHANGELOG.md`, and both `agents/` manifests
+mirror it.
 
 Do not add a `version:` key to `SKILL.md` frontmatter. Frontmatter is `name`,
 `description`, and optionally `allowed-tools`. A third copy of the version would
 sit in the file most certain to be read while being the easiest to forget.
 
 **A documentation-only change does not bump the version.** A bump asserts that
-the skill changed. If no rule, script, template, asset, or output moved, leave
-the number alone.
+a skill in the family changed. If no rule, script, template, asset, or output
+moved, leave the number alone.
 
 ## Publishing a skill
 
@@ -146,3 +152,82 @@ re-running deletes its files from the public branch.
 The script refuses to run against a dirty worktree, copies only git-tracked
 content via `git archive`, and aborts before committing if the scanner finds
 anything.
+
+## The OnPing target: `plow-technologies/onping-skills`
+
+The OnPing skills are published separately, to
+[`plow-technologies/onping-skills`](https://github.com/plow-technologies/onping-skills),
+by `scripts/export-onping-skills.sh`. The guardrails are the same; three things
+differ.
+
+- **Selection is per skill.** `nix/onping-skills-allowlist.nix` lists every
+  OnPing skill ID as included or excluded. `nix flake check` fails when a skill
+  is in neither list, so a new skill cannot reach the target without a decision.
+  It also fails when an included skill imports a `_`-prefixed helper that is not
+  included.
+- **The target's `main` is protected; delivery is by pull request.** An export
+  commit is built on top of the target's own `main`, fetched into
+  `refs/export/onping-skills/main`, not on an orphan branch. The target's
+  history consists only of exports, so this adds no private ancestry, and it
+  gives GitHub a shared history to open a pull request against. The exporter
+  and the hook both refuse a commit that shares history with this repository's
+  `main`.
+- **The layout is flat.** Every included skill lands at `onping/skills/<id>/`,
+  including the nested `lj-restore-*` group and `onping-line-graph`, so the
+  scripts' sibling-helper imports keep working.
+
+```bash
+./scripts/export-onping-skills.sh --dry-run    # evaluate and fetch; build nothing
+./scripts/export-onping-skills.sh              # commit on local branch export/<sha>; push nothing
+./scripts/export-onping-skills.sh --push       # push export/<sha> and open a pull request
+./scripts/export-onping-skills.sh --bootstrap  # once, while the target has no main: README only
+```
+
+A run where the target's `main` already matches produces no commit and no pull
+request. While an export pull request is open, `--push` adds the new export
+commit to that pull request's branch instead of opening a second one.
+
+Every OnPing skill that can change live data starts its `SKILL.md`, directly
+under the title, with a standard warning: what it changes, whether that can be
+undone, and exactly how its script gates the change. Add one to any new
+mutating skill, and never claim a gate the script does not implement.
+
+The bootstrap commit holds `README.md` alone, so every skill enters the
+protected `main` through a pull request. Each pull request must pass two
+checks that the export itself ships in `.github/workflows/checks.yml`:
+`scan` runs `scripts/scan-public.sh`, and `flake-check` runs `nix flake check`
+and builds the bundle.
+
+The scanner's marker list, `scripts/scan-patterns.tsv`, is never exported: it
+names the strings it exists to keep out. CI receives it as a repository
+secret, and reports matches without printing a pattern. Refresh the secret
+whenever the list changes:
+
+```bash
+gh secret set SCAN_PATTERNS --repo plow-technologies/onping-skills < scripts/scan-patterns.tsv
+```
+
+After the bootstrap, protect the target's `main` once:
+
+```bash
+gh api -X PUT repos/plow-technologies/onping-skills/branches/main/protection \
+  --input - <<'JSON'
+{"required_status_checks": {"strict": true, "contexts": ["scan", "flake-check"]},
+ "enforce_admins": true,
+ "required_pull_request_reviews": {"required_approving_review_count": 0},
+ "restrictions": null,
+ "allow_force_pushes": false,
+ "allow_deletions": false}
+JSON
+```
+
+The approval count is 0 because GitHub does not let an author approve their
+own pull request; with a second maintainer, raise it to 1.
+
+The `pre-push` hook guards this target by URL, like the other one: it
+accepts only `export/*` branches (and `main` only while creating it), rejects
+paths outside the allowlist's `publishedPaths`, and runs the scanner. Its limits
+are the ones stated above.
+
+Changes made directly in `onping-skills` are reverted by the next export. Port
+an accepted change here first.

@@ -133,6 +133,81 @@ Judgment items: no customer data, no private-repo citations, no NDA-derived
 content. The skill generates HTML documents and talks to no service. Vendored
 licenses (MIT, BSD-3-Clause) are compatible with this repository's MIT license.
 
+### onping, lumberjack-restore, onping-charts (target: `plow-technologies/onping-skills`)
+
+```
+Skill(s):     every OnPing skill: the 142 under onping/skills (including the 11
+              `_*` helper modules), the 3 lj-restore-* skills under
+              onping/skills/lumberjack-restore, and onping-line-graph; 146 IDs,
+              listed in nix/onping-skills-allowlist.nix
+Source:       onping, lumberjack-restore, onping-charts (per-skill allowlist)
+Target:       plow-technologies/onping-skills (not smurphy8/public-skills)
+Prepared by:  Claude Code, from owner decisions recorded 2026-09-30
+Reviewed by:  Scott Murphy
+Date:         2026-09-30
+Scanner:      clean (464 hits under the previous patterns, plus the new
+              line-numbered-citation, OOXML, and name markers, all resolved)
+Judgment items: see below
+Result:       APPROVED (after review of plow-technologies/onping-skills PR #1)
+```
+
+This source was rated HIGH / "not a candidate" for `smurphy8/public-skills`. It
+is cleared for a different target, the company-owned
+`plow-technologies/onping-skills`, by fixing the findings. The scrub replays an
+earlier unmerged pass (branch `publish-onping-skills`) and extends it to the
+files that pass never saw: the MQTT integrator skills, `_mqtt_integrator_routes`,
+and a spreadsheet template.
+
+| Marker | Resolution |
+|---|---|
+| Developer-absolute path | Rewritten to the installed `~/.claude/skills/<skill>/` layout |
+| Private device IP | RFC 5737 documentation addresses (`192.0.2.x`) |
+| Private-repo citation | Repo roots and every `:line` suffix removed; bare module names kept |
+| Real Lumberjack serial | Synthetic `1001` |
+| Customer, well, and person names | Synthetic values; the scanner now checks names in every file |
+| Real PIDs and IDs in examples | Synthetic values, one consistent mapping (judgment pass, below) |
+| Spreadsheet template | 36 real PIDs and a well name replaced; structure unchanged |
+| Other providers' credential file names | Removed from comments |
+
+**Judgment: OnPing's API routes are published deliberately.** Documenting them
+is what these skills are for, and the target is owned by the company that owns
+OnPing. The routes are reachable by any authenticated customer, carry no
+credentials, and enforce permissions server-side.
+
+**Judgment: the product host is public.** `https://onping.plowtech.net` is the
+OnPing service every skill calls. The scanner permits exactly that host and
+still rejects every other occurrence of the employer domain.
+
+**Judgment: authentication is unchanged, by owner decision.** `onping-login`
+and the `onping-doc-*` skills keep their resolution order (environment
+variable, plaintext file, then `gpg -d` of an encrypted file). No credential is
+in the tree; the exported `.gitignore` lists the credential file names.
+
+**Judgment: example values were captured, not invented, and all of them are gone.**
+Examples were pasted from production. Beyond what the scanner sees, a manual pass
+over every code block and every 3–8 digit number replaced 27 PIDs, the VPIDs, the
+audit row IDs, location, site, company, serial, and control-parameter IDs,
+truncated hash and UUID prefixes, a private commit reference, and several
+customer, well, and site names. It used one shared mapping, so cross-skill
+references still line up. The names found are now scanner rows. Kept on
+purpose: counts, sizes, ports, timestamps, and the docs site's public document
+IDs. Internal bug-tracker numbers were removed by owner decision; the text around
+each one still describes the bug, and the scanner now rejects tracker references.
+
+**Judgment: no NDA or reverse-engineered content.** These skills document a
+first-party API against a first-party service.
+
+**Owner decision: every skill that changes live data warns.** 53 skills start
+their `SKILL.md` with a standard warning that says what they change, whether it
+can be undone, and how the script gates it. The warnings come from reading the
+scripts. The exported README opens with the same warning, and the LICENSE
+disclaims warranty and liability.
+
+**Owner decision: this target is proprietary.** The export writes its own
+`LICENSE`, `Copyright (c) 2026 Pak Energy LLC. All Rights Reserved.`, and never
+ships this repository's MIT license. This repository and `smurphy8/public-skills`
+stay MIT.
+
 ## Deferred sources
 
 Reviewed enough to rank, not cleared for publication.
@@ -143,4 +218,5 @@ Reviewed enough to rank, not cleared for publication.
 | `aha`, `azdo` | LOW | ~12 absolute paths in examples; `lib/` dirs need `extraPaths` |
 | `google` | LOW-MED | Work email and domain hint in 6 lines |
 | `aml` | MEDIUM | **Legal, not privacy.** Reverse-engineered vendor protocol with C# source citations; documents credential recovery from a config export. Needs a deliberate decision, not a scrub. |
-| `onping`, `openspec`, `pakenergy` | HIGH | Not a candidate. Internal hosts, private IPs, ~195 undocumented routes, real customer identifiers. |
+| `openspec`, `pakenergy` | HIGH | Not a candidate. Real customer identifiers and internal process detail. |
+| `onping` | — | Not for this target. Published per skill to `plow-technologies/onping-skills`; see the review above. |

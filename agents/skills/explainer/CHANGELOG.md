@@ -14,6 +14,58 @@ standard wholesale, so a document you wrote last week may not satisfy the
 standard you just installed. The old document is still fine; it just is not
 compliant with the new rules.
 
+## 0.5.0 — 2026-10-02
+
+A document written against `0.4.0` can fail this version three ways: an
+analogy that a chart or the data could replace, an undefined symbol, and an
+unlinked source file. The third one `--validate` now catches.
+
+### Added
+
+- **Language constraint 15, `Symbols`.** Define every variable and symbol on
+  first use, no later than the next sentence: the quantity it stands for, its
+  unit, and how it is derived. A symbol is a code variable such as `b`, a math
+  variable, a suffixed name such as `b0`, a function form such as L(r), or a
+  Greek letter. Each argument of a function form counts, so L(r) owes both L
+  and r. A symbol first used in a figure, a table header, or a `<math>` block
+  is defined before the figure or in its caption. Unlike a pointer, a symbol
+  gets no deletion test, because an expression is the claim.
+- **Definitions blocks.** A passage that introduces several symbols at once can
+  define them in a table (`Symbol`, `Meaning`, `Unit`) or a list instead of
+  inline. The block must sit in the same section, immediately before or after
+  the paragraph, figure, or table that first uses the symbols. A block after a
+  figure does not define the figure's symbols. Definitions tables join exact
+  comparisons as an allowed use of a table.
+- **File links.** Every file the prose names, quotes, or cites is a `file://`
+  link to its absolute path. Create mode now renders a visible `Sources`
+  section that links each `--from-file` source, where earlier versions only
+  wrote hidden comments.
+- **Two `--validate` checks.** An error when a `--from-file` source has no
+  `file://` link in the document, and a warning for an absolute path in inline
+  code that is not inside a link. A path inside a code block is exempt.
+- **Two self-check steps in Part A**: a symbol sweep, run before the length
+  count because a definition adds words, and a file-link sweep. Part A now
+  runs seven steps.
+
+### Changed
+
+- **Narrative obligation 3 is now "Show the mechanism with the subject's own
+  evidence first."** Where the data is in hand, a chart or a few worked
+  examples from that data show the mechanism. An analogy is the fallback, for a
+  mechanism that no data shows, and each part of it is mapped back to the
+  subject. An analogy that a chart or an example could replace fails the
+  obligation. The `0.4.0` wording was "Keep the analogy and the worked
+  example", which agents read as a mandate to add an analogy.
+- **The self-check's device step tests every analogy** against the data that
+  could replace it, and never accepts an analogy added to pass the step.
+
+### Fixed
+
+- **The device step failed the wrong documents.** It said "a document with
+  none of the three fails", which fails only a document missing the thesis,
+  the example, and the author's voice all at once. Each missing device now
+  fails its own obligation.
+
 ## 0.4.0 — 2026-08-19
 
 ### Added

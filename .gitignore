@@ -217,6 +217,7 @@ credentials.json
 !azdo/lib/
 !azdo/lib/azdo_skills/
 !azdo/lib/azdo_skills/*.py
+!scripts/lib/
 
 # Skill runtime state
 devtools/skills/grip/state/

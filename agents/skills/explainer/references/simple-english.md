@@ -4,7 +4,7 @@ Adapted from [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish) (
 
 The standard is **ASD-STE100 Issue 9 (2025-01-15)**, Simplified Technical English. STE is the controlled language that aerospace and defense manufacturers use for maintenance documentation. The rules exist so a tired reader who is not a native English speaker cannot misread a sentence. They remove the usual markers of model-generated prose as a side effect: long sentences, synonym rotation, hedges, filler, and decorative clauses.
 
-`SKILL.md` carries the 14 constraints that fire on every sentence, plus the 8 `## Narrative` obligations that keep the standard from flattening expository prose. This file is the full catalog. Open it when you must adjudicate a specific case: a part-of-speech ruling, the parentheses rule, a possessive apostrophe, the full audit checklist, or [how agents over-apply these rules in practice](#this-repositorys-findings-on-over-application).
+`SKILL.md` carries the 15 constraints that fire on every sentence, plus the 8 `## Narrative` obligations that keep the standard from flattening expository prose. This file is the full catalog. Open it when you must adjudicate a specific case: a part-of-speech ruling, the parentheses rule, a possessive apostrophe, the full audit checklist, or [how agents over-apply these rules in practice](#this-repositorys-findings-on-over-application).
 
 ## Two warnings before you use this file
 
@@ -326,6 +326,25 @@ Constraint 14 pushes against three rules, and each conflict is settled in the ag
 
 **What this ruling is NOT built on.** The [over-application findings](#this-repositorys-findings-on-over-application) below rest on a 93-explainer corpus measurement. This one does not. **No pointer-density measurement of that corpus was made**, before or after the standard landed, so no figure is claimed here. The ruling rests on one reported failure and on the rule-gap analysis recorded in `openspec/changes/archive/2026-08-19-add-explainer-pointer-gloss-rule/design.md`. It sits next to measured findings, so the distinction is stated rather than left for a reader to assume.
 
+## This repository's ruling on symbols
+
+**This section is this repository's, not an ASD ruling.** The standard has no rule for a variable or a symbol, because a maintenance manual names parts, not quantities. An explainer about a model, a fit, or a formula names quantities on every line.
+
+`SKILL.md` carries it as constraint 15: define every variable and symbol on first use, either inline no later than the next sentence or in a definitions block next to the passage. The definition says what quantity the symbol stands for, gives its unit if it has one, and says how it is computed if it is derived. A symbol is a name that stands for a quantity — a code variable such as `b` or `beta`, a math variable, a suffixed name such as `b0`, a function form such as L(r), or a Greek letter. Each argument of a function form is a symbol too. A standard unit (`psi`) or a universal constant (π) is not a symbol under this rule.
+
+**Why no deletion test.** Constraint 14 needs one, because a pointer can annotate a claim that the sentence already states. A symbol cannot. An expression such as L(row) − L(p) IS the claim, and a reader cannot evaluate it while any of its terms is undefined. So every symbol owes its definition.
+
+**Definitions blocks.** A passage that introduces several symbols at once can define them in one block instead of a run of inline clauses. The block is a `<table>` with `Symbol`, `Meaning`, and `Unit` columns, or a `<ul>` whose items each open with the symbol. It sits in the same `h2` section, immediately before or immediately after the paragraph, figure, or table that first uses the symbol, with no other block between them. Each entry carries the same facts as an inline definition and takes the descriptive 25-word limit. A block two paragraphs away, or in an earlier section, does not count: the reader at the first use must find the definition without searching.
+
+**Figures first.** A symbol that first appears in a diagram label, an axis title, a chart legend, a table header, or a `<math>` block owes its definition in the prose before that figure, in a definitions block immediately before it, or in its caption. A block after the figure does not count. A reader meets the figure before the paragraph or block after it.
+
+**Worked before/after**, from an explainer that defined p two sentences after its first use and never defined L:
+
+**Before:** The first is the measured start, L(row) − L(p), or NaN on a row that has no shut-in ahead of it.
+**After:** The first is the measured start, L(row) − L(p), or NaN on a row that has no shut-in ahead of it. Here L is the line pressure in psi, and p is the last closed row before the valve opens.
+
+The re-definition rule and the three interactions match constraint 14: re-define a symbol on its first use after an intervening `h2` (a definitions block in one section does not cover a later one), keep the definition through the Section 9 filler deletion because it states a fact, leave the symbol's own text exact, and split a sentence that the definition pushes past its cap.
+
 ## Self-check before you deliver
 
 **This step is not optional.** `SKILL.md` carries the authoritative two-part version. This is the same check in full.
@@ -335,18 +354,20 @@ Run both parts against the prose **as it stands in the written file**, never aga
 ### Part A — violations
 
 1. **Pointer sweep — first, before the length count.** Search for `\b[0-9]+[a-z]\b` (catches `5a`, `4c`), for `\b[A-Z][0-9]+\b` (catches `T77`), for `\b[a-z]+[0-9]+[a-z][a-z0-9]*\b` (catches a lowercase internal code such as `o6f3`), and for `Section`, `Rule`, `Step`, `Table`, `Figure`, and `Appendix` followed by a number. Apply the deletion test to each hit, then gloss on first use, per [the pointer ruling](#this-repositorys-ruling-on-pointers-and-indexes). The patterns over-match on purpose: a surfaced pointer that needs no gloss costs one judgment call, and a missed pointer costs the reader the sentence. **This step runs first because a gloss adds words.** A length count taken before the gloss measures text that no longer exists, and the split it prescribes lands on a sentence the gloss then lengthens again.
-2. **Longest sentences.** Count the words in the three longest sentences. Split any sentence that is over its classification's cap — 20 words procedural, 25 words descriptive. Apply Rule 8.6 when you count.
-3. **Searchable-pattern sweep.** Search for each of these literal strings: `'ll`, `'re`, `'ve`, `n't`, `it's`, `has been`, `have been`, `had been`, `should`, `would`, `may`, `might`, `could`, `is being`, `, making`, `, allowing`, `, enabling`, `, ensuring`, `;`, `e.g.`, `i.e.`, `etc.` Every hit outside the Untouchables is a violation. Fix each one. This list is complete as written: the em dash and the colon are NOT on it, per the Rule 8.1 ruling in Section 8.
-4. **Condition placement.** Search for every `if` and every `when`. Move any condition that trails its command to the start of its sentence, and add a comma.
-5. **Unchosen synonyms.** Search for the members of the check / verify / confirm / validate set that you did NOT choose, and for `config` / `settings` if that pair was not fixed. Replace every hit with the chosen term.
+2. **Symbol sweep — also before the length count.** Search for `<code>[^<]{1,6}</code>` (catches `b`, `beta`, `b0`), for `<mi>` (catches a MathML variable), for `\b[A-Za-z][A-Za-z0-9_]{0,3}\([^()]{1,12}\)` (catches a function form such as L(r)), and for Greek letters, written as characters or as names such as `alpha`, `beta`, `tau`, and `lambda`. Read every table header, axis title, chart legend, and diagram label for symbols too. Define each hit on first use, per [the symbol ruling](#this-repositorys-ruling-on-symbols). A hit counts as defined when an adjacent definitions block in the same section defines it. The patterns over-match on purpose, for the same reason as step 1, and a definition adds words, for the same reason as step 1.
+3. **Longest sentences.** Count the words in the three longest sentences. Split any sentence that is over its classification's cap — 20 words procedural, 25 words descriptive. Apply Rule 8.6 when you count.
+4. **Searchable-pattern sweep.** Search for each of these literal strings: `'ll`, `'re`, `'ve`, `n't`, `it's`, `has been`, `have been`, `had been`, `should`, `would`, `may`, `might`, `could`, `is being`, `, making`, `, allowing`, `, enabling`, `, ensuring`, `;`, `e.g.`, `i.e.`, `etc.` Every hit outside the Untouchables is a violation. Fix each one. This list is complete as written: the em dash and the colon are NOT on it, per the Rule 8.1 ruling in Section 8.
+5. **Condition placement.** Search for every `if` and every `when`. Move any condition that trails its command to the start of its sentence, and add a comma.
+6. **Unchosen synonyms.** Search for the members of the check / verify / confirm / validate set that you did NOT choose, and for `config` / `settings` if that pair was not fixed. Replace every hit with the chosen term.
+7. **File links.** Search the prose for every file name and path, including a file that a sentence quotes from or cites. Make each one a `file://` link to its absolute path, per the `## Sources and file links` section of `SKILL.md`. `--validate` catches an unlinked `--from-file` source and warns on an unlinked absolute path in inline code. It cannot see a file named in plain words.
 
 ### Part B — texture
 
 Every step in Part A searches for material to delete, so Part A cannot fail a document for being lifeless. Part B can. Run it AFTER Part A, because Part A splits and deletes and would undo this work.
 
-6. **Distribution.** Count the Rule 8.6 length of every sentence and inspect the spread. The target is two-sided. Too tight or too short — a band narrower than about 6 words, or fewer than about one sentence in five at 18 to 25 words — is repaired by combining related short claims into one sentence that carries a joint: a subordinate clause, an em-dash aside, or a colon. Too long — more than about one sentence in three at 18 to 25 words, or fewer than about one in six at 8 words or less — is repaired by splitting the flabbiest long sentences so a short one can carry the verdict. NEVER pad a sentence with filler.
-7. **Devices.** Confirm that the deck and the conclusion assert the thesis, that at least one analogy or worked example appears where the subject has a mechanism to make legible, and that the author's voice is present where the author is the agent.
-8. **Re-measure after any repair.** A repair under step 6 changes the distribution it was measured against, and a split under Part A creates the clustering step 6 looks for. After your last edit to the file, measure the spread once more.
+8. **Distribution.** Count the Rule 8.6 length of every sentence and inspect the spread. The target is two-sided. Too tight or too short — a band narrower than about 6 words, or fewer than about one sentence in five at 18 to 25 words — is repaired by combining related short claims into one sentence that carries a joint: a subordinate clause, an em-dash aside, or a colon. Too long — more than about one sentence in three at 18 to 25 words, or fewer than about one in six at 8 words or less — is repaired by splitting the flabbiest long sentences so a short one can carry the verdict. NEVER pad a sentence with filler.
+9. **Devices.** Confirm that the deck and the conclusion assert the thesis, that a chart or a few worked examples from the subject's own data show each mechanism the document explains, and that the author's voice is present where the author is the agent. Then test every analogy: if a chart or a few examples drawn from the data can do its job, the analogy fails, so replace it with them. Never add an analogy to pass this step. Each missing device fails its own obligation.
+10. **Re-measure after any repair.** A repair under step 8 changes the distribution it was measured against, and a split under Part A creates the clustering step 8 looks for. After your last edit to the file, measure the spread once more.
 
 ### Full audit checklist
 
@@ -367,6 +388,8 @@ Adapted from the upstream `references/checklist.md`. Run this pass when the two-
 | `simply`, `just`, `easily`, `seamlessly`, `robust` | Filler, carries no fact | Delete. |
 | ` if `, ` when ` (mid-sentence) | Trailing condition (Rule 5.4) | Move the condition to the start, add a comma. |
 | `\b[0-9]+[a-z]\b`, `\b[A-Z][0-9]+\b`, `\b[a-z]+[0-9]+[a-z][a-z0-9]*\b`, `Section`/`Rule`/`Step`/`Table`/`Figure`/`Appendix` + number | Bare pointer, referent not recoverable (this repo's constraint 14) | Apply the deletion test, then gloss on first use. |
+| `<code>[^<]{1,6}</code>`, `<mi>`, `\b[A-Za-z][A-Za-z0-9_]{0,3}\([^()]{1,12}\)`, Greek letters | Undefined variable or symbol (this repo's constraint 15) | Define it on first use — inline by the next sentence, or in an adjacent definitions block: the quantity, the unit, the derivation. |
+| A file name or path outside an `<a href="file://…">` | Unlinked file reference (this repo's `## Sources and file links`) | Wrap it in a `file://` link to its absolute path. |
 
 **Countable.**
 
@@ -384,17 +407,17 @@ Adapted from the upstream `references/checklist.md`. Run this pass when the two-
 9. **Warnings.** Command or condition first, risk second (Rules 7.2, 7.3).
 10. **Completeness.** The articles are present, "that" is present after "make sure", and no sentence reads as a telegram (Rule 4.2).
 11. **Untouchables intact.** Code, identifiers, quoted errors, and proper nouns are unchanged.
-12. **Carve-outs respected.** The thesis is still an assertion, the analogies and the worked examples are still present, and the sentence lengths vary below the cap.
+12. **Carve-outs respected.** The thesis is still an assertion, every chart and worked example in the draft survived the sweep, each mechanism is shown with the subject's own data where the data exists, and the sentence lengths vary below the cap.
 
 ## Explainer adaptations
 
-An explainer is expository prose with a thesis, not a maintenance manual. Applied literally, the standard degrades it: uniform sentences, deleted analogies, and a hedged thesis. `SKILL.md` carries these as the eight numbered obligations of its `## Narrative` section, stated in the imperative and carrying the same force as the 14 constraints. They are stated there rather than only here, because an agent that reads only `SKILL.md` still needs them.
+An explainer is expository prose with a thesis, not a maintenance manual. Applied literally, the standard degrades it: uniform sentences, deleted analogies, and a hedged thesis. `SKILL.md` carries these as the eight numbered obligations of its `## Narrative` section, stated in the imperative and carrying the same force as the 15 constraints. They are stated there rather than only here, because an agent that reads only `SKILL.md` still needs them.
 
 They are obligations, not permissions. That wording is deliberate and it was earned: see [This repository's findings](#this-repositorys-findings-on-over-application) below.
 
 1. **Assert the thesis.** State a claim in the deck and in the concluding passage, and stand behind it ("Batching at the edge is the wrong layer to optimise"). Banned modals and hedging language remain banned. Asserting is not hedging, and neutral description does not substitute for a claim.
 2. **Vary sentence length across the full range below the cap.** The caps are ceilings, never targets. Both a document of uniformly short sentences and a document of uniformly long ones violate the spirit of Rule 4.2, which exists to forbid telegraph style. The target is two-sided, and `SKILL.md` carries the calibration figures.
-3. **Keep the analogy and the worked example.** A resemblance is a fact about the subject, not decoration. Section 9 filler deletion does not license the removal of the worked example or of the analogy that makes a mechanism legible.
+3. **Show the mechanism with the subject's own evidence first.** Where the subject has a mechanism and the data is in hand, show it with a chart or with a few worked examples drawn from that data. Use an analogy only where no data shows the mechanism, and map each part of it back to the subject in the same passage. An analogy that a chart or an example from the data can replace fails this obligation, because the reader must translate the analogy back and the data needs no translation. A subject with no mechanism owes none of these. Never invent an analogy to discharge it — an analogy that does not match the mechanism misleads the reader. Section 9 filler deletion does not license the removal of the chart, the worked examples, or the analogy that makes a mechanism legible.
 4. **Write in the author's own voice where the author is the agent.** First-person reference is legal, and Rule 3.6 often requires it, because active voice needs a named agent. A correction memo states "My earlier figure was wrong".
 5. **Let each paragraph carry a developed thought.** Hold to Rule 6.5 and Rule 6.6. A thought split across two paragraphs to stay under the sentence cap is fragmented, not clarified.
 6. **Reproduce quoted source material exactly.** Text inside `<blockquote>`, `<code>`, `<pre>`, `<math>`, and any Vega-Lite JSON spec is never rewritten for compliance. A quotation drawn from a `--from-file` source is reproduced exactly, including its own violations.

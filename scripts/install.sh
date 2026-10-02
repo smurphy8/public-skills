@@ -63,8 +63,20 @@ SKILL_DIRS=""
 for skills_root in "$REPO_ROOT"/*/skills; do
   [ -d "$skills_root" ] || continue
   for cand in "$skills_root"/*; do
-    [ -f "$cand/SKILL.md" ] || continue
-    SKILL_DIRS="$SKILL_DIRS $cand"
+    [ -d "$cand" ] || continue
+    if [ -f "$cand/SKILL.md" ]; then
+      SKILL_DIRS="$SKILL_DIRS $cand"
+      continue
+    fi
+    # A directory with no SKILL.md is a nested GROUP, not a skill: the Nix
+    # catalog discovers it via its own `subdir` entry, so its children are real
+    # skills with their own ids (onping/skills/lumberjack-restore/lj-restore-*).
+    # Without this second level the script installer silently ships fewer skills
+    # than the Nix path, which is worse than failing.
+    for sub in "$cand"/*; do
+      [ -f "$sub/SKILL.md" ] || continue
+      SKILL_DIRS="$SKILL_DIRS $sub"
+    done
   done
 done
 
